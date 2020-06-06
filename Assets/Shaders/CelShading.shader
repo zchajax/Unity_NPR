@@ -62,6 +62,9 @@
         {
             Tags {"LightMode" = "ForwardBase"}
 
+            Cull back
+            
+            
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -107,9 +110,9 @@
             {
 
                 float3 normal = normalize(i.worldNormal);
-                float3 lightDir = UnityWorldSpaceLightDir(i.worldPos);
-                float3 viewDir = UnityWorldSpaceViewDir(i.worldPos);
-                float3 halfVector = normalize(lightDir + viewDir);
+                float3 lightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+                float3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
+                float3 halfVector = normalize(viewDir + lightDir);
 
                 // diffuse item
                 float nl = dot(normal, lightDir);
@@ -137,7 +140,7 @@
                 fixed3 diffuse = albedo / PI * nl * _LightColor0.rgb;
 
                 // specular item
-                fixed spec = dot(normal, halfVector);
+                float spec = max(0, dot(normal, halfVector));
                 spec = pow(spec, _Shininess);
 
                 w = fwidth(spec);
