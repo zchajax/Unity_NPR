@@ -420,7 +420,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &689089351
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -694,6 +694,7 @@ GameObject:
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
   - component: {fileID: 963194230}
+  - component: {fileID: 963194231}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -759,8 +760,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.00066691724, y: 0.9987385, z: -0.013793139, w: 0.048277177}
-  m_LocalPosition: {x: 2.690277, y: 2.6526673, z: 1.2566624}
+  m_LocalRotation: {x: -0.076695144, y: 0.9095773, z: -0.19416037, w: -0.35928923}
+  m_LocalPosition: {x: 5.093013, y: 2.8496623, z: 13.911163}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -788,13 +789,28 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e736f6dcea3154792a8c0923a27869f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_OilPaintingMat: {fileID: 2100000, guid: f1d80964d3a2043eba7442b7706e489b, type: 2}
   m_Radius: 10
+--- !u!114 &963194231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8338d7e749ee94750a7e376759d20086, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SobelOutlineMat: {fileID: 2100000, guid: b84f07d8c7cc449fda2ea056685be490, type: 2}
+  m_OutlineThickness: 1.62
+  m_OutlineColor: {r: 0.0754717, g: 0.0754717, b: 0.0754717, a: 1}
 --- !u!1 &1042687436
 GameObject:
   m_ObjectHideFlags: 0
