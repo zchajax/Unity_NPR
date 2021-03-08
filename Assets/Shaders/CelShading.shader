@@ -8,7 +8,10 @@
         _OutlineColor ("Outline Color", Color) = (0 ,0 , 0, 0)
         _Shininess ("Shininess", Range(1, 600)) = 200
         _DiffuseSegment ("Diffuse Segment", Vector) = (0.1, 0.3, 0.6, 1.0)
-        _SpecularSegment ("Specular Segment", Range(0, 1)) = 0.5
+        _RampSmooth("Ramp Smooth", Range(0, 0.1)) = 0.02
+        _SpecularSmooth("Specualr Smooth", Range(0, 1)) = 0.02 
+        _RimPower("Rim Power", Range(1., 10.)) = 3.
+        _RimStrenth("Rim Strength", Range(0., 1.)) = 1.
     }
     SubShader
     {
@@ -42,12 +45,21 @@
 
             v2f vert (appdata v)
             {
-                v2f o;
+                // Scale with distance from view point
+                /*v2f o;
                 float4 viewPos = mul(UNITY_MATRIX_MV, v.vertex);
                 float3 viewNormal = mul(UNITY_MATRIX_IT_MV, v.normal);
                 viewNormal.z = -0.5;
                 viewPos += float4(normalize(viewNormal), 0) * _Outline;
-                o.vertex = mul(UNITY_MATRIX_P, viewPos);
+                o.vertex = mul(UNITY_MATRIX_P, viewPos);*/
+
+                // Not scale with distance from view point
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                float3 viewNormal = mul((float3x3)UNITY_MATRIX_IT_MV, v.normal);
+                float2 extendDir = normalize(TransformViewToProjection(viewNormal.xy));
+                o.vertex.xy += extendDir * (o.vertex.w * _Outline * 0.1);
+
                 return o;
             }
 
@@ -97,8 +109,11 @@
             float4 _MainTex_ST;
             fixed4 _Color;
             fixed4 _DiffuseSegment;
-            fixed _SpecularSegment;
             float _Shininess;
+            float _RampSmooth;
+            float _SpecularSmooth;
+            float _RimPower;
+            float _RimStrenth;
 
             v2f vert(appdata v)
             {
@@ -121,7 +136,7 @@
                 // diffuse item
                 float nl = dot(normal, lightDir);
                 nl = nl * 0.5 + 0.5;
-                fixed w = fwidth(nl);
+                fixed w = _RampSmooth;
 
                 if (nl < _DiffuseSegment.x + w)
                 {
@@ -147,15 +162,19 @@
                 float spec = max(0, dot(normal, halfVector));
                 spec = pow(spec, _Shininess);
 
-                w = fwidth(spec);
-                spec = lerp(0, 1, smoothstep(_SpecularSegment - w, _SpecularSegment + w, spec));
-
+                w = _SpecularSmooth;
+                spec = smoothstep(0.5 - w * 0.5, 0.5 + w * 0.5, spec);
                 fixed3 specular = spec * _LightColor0.rgb;
+
+                // rim
+                half rim = pow(1.0 - saturate(dot(viewDir, normal)), _RimPower);
+                rim *= smoothstep(-0.3, 0.3, -dot(viewDir, lightDir));
+                rim *= _LightColor0.rgb * _RimStrenth;
 
                 // ambient
                 fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.rgb * albedo;
 
-                fixed3 col = diffuse + specular + ambient;
+                fixed3 col = diffuse + specular + ambient + rim;
                 
                 return fixed4(col, 1);
             }
